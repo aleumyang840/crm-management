@@ -2,6 +2,9 @@ import { Pool } from 'pg';
 import * as dotenv from 'dotenv';
 import path from 'path';
 
+console.log('SUPABASE_URL:', process.env.NEXT_PUBLIC_SUPABASE_URL)
+console.log('SUPABASE_KEY:', process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY)
+
 // Load .env.local
 dotenv.config({ path: path.resolve(process.cwd(), '.env.local') });
 
