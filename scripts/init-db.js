@@ -66,12 +66,15 @@ async function initDb() {
     // Create a default admin user if none exists
     const adminCheck = await client.query('SELECT * FROM admin_users WHERE email = $1', ['admin@example.com']);
     if (adminCheck.rows.length === 0) {
-      // Password hash for 'password123' (In production, use bcrypt)
-      // For this starter we just use raw text comparison per plan
+      // 3. 아이디 비밀번호 bcrypt사용
+      const bcrypt = require('bcryptjs');
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash('password123', salt);
+
       await client.query(`
         INSERT INTO admin_users (email, password_hash, role)
-        VALUES ('admin@example.com', 'password123', 'admin')
-      `);
+        VALUES ($1, $2, $3)
+      `, ['admin@example.com', hashedPassword, 'admin']);
       console.log('✅ Created default admin user: admin@example.com / password123');
     }
 

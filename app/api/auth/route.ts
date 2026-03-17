@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { signToken } from '@/lib/auth';
 import { query } from '@/lib/db';
+import bcrypt from 'bcryptjs';
 
 export async function POST(req: Request) {
   try {
@@ -9,8 +10,8 @@ export async function POST(req: Request) {
     const res = await query('SELECT * FROM admin_users WHERE email = $1', [email]);
     const user = res.rows[0];
 
-    // Note: In production, use bcrypt library to check password_hash
-    if (user && user.password_hash === password) { 
+    // 3. 아이디 비밀번호 bcrypt사용
+    if (user && await bcrypt.compare(password, user.password_hash)) { 
       const token = signToken({ id: user.id, email: user.email, role: user.role });
       
       const response = NextResponse.json({ success: true, user: { email: user.email, role: user.role } });
