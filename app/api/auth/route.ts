@@ -23,6 +23,15 @@ export async function POST(req: Request) {
       });
       return response;
     }
+    
+    if (!user) {
+      return NextResponse.json({ error: 'User not found' }, { status: 401 });
+    }
+
+    if (!user.password_hash) {
+      console.error('❌ password_hash 없음:', user);
+      return NextResponse.json({ error: 'Invalid user data' }, { status: 500 });
+    }
 
     return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 });
   } catch (error) {
